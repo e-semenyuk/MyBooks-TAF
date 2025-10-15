@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "strict": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@core/*": ["core/*"],
+      "@cfg": ["core/config/index.ts"]
+    }
+  },
+  "include": ["core", "tests", "global-setup.ts", "global-teardown.ts"]
+}
+

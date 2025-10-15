@@ -1,0 +1,27 @@
+{
+  "name": "test-automation-framework",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test tests/e2e --grep @smoke",
+    "test:api": "playwright test tests/api --grep @api",
+    "test:regression": "playwright test --grep @regression",
+    "pw:install": "playwright install --with-deps",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "setup": "node -e \"console.log('No setup yet')\""
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "ajv": "^8.17.1",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.4.5",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.3.3",
+    "@types/node": "^20.12.12"
+  }
+}
+

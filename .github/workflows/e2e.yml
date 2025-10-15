@@ -1,0 +1,32 @@
+name: e2e
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shard: [1/2, 2/2]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - name: Run tests
+        run: |
+          npx playwright test \
+            --project ${{ matrix.browser }} \
+            --shard ${{ matrix.shard }} \
+            --reporter=line,junit,html \
+            --grep @smoke
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: pw-artifacts-${{ matrix.browser }}-${{ matrix.shard }}
+          path: |
+            playwright-report
+            test-results
+            traces
+
