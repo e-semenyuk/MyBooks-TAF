@@ -1,5 +1,5 @@
 import Ajv from 'ajv';
-import schema from '../schemas/user.get.v1.schema.json';
+import schema from '../schemas/user.get.v1.schema.json' assert { type: 'json' };
 const ajv = new Ajv({ allErrors: true, strict: false });
 const validate = ajv.compile(schema);
 export function validateUserGetV1(data: unknown) {

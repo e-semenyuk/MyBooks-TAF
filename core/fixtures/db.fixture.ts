@@ -13,7 +13,7 @@ async function createDb(): Promise<Db> {
 }
 
 export const test = base.extend<{ db: Db }>({
-  db: async ({}, use) => {
+  db: async (_args, use) => {
     const db = await createDb();
     await use(db);
   },

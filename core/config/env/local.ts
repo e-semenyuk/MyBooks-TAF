@@ -1,4 +1,4 @@
 export default {
-  toggles: { useHarMocks: false },
+  toggles: { useHarMocks: true },
 };
 

@@ -5,9 +5,9 @@ import { cfg } from '../../../core/config';
 test.describe('Auth / Login', () => {
   test('@smoke user can login via UI', async ({ page }) => {
     const login = new LoginPage(page);
-    await page.goto(cfg.BASE_URL + '/login');
+    await page.goto(cfg.BASE_URL);
     await login.login(process.env.EMAIL_USER!, process.env.EMAIL_PASS!);
-    await expect(page.getByTestId('welcome')).toBeVisible();
+    await expect(page.getByTestId('home-page')).toBeVisible();
   });
 });
 

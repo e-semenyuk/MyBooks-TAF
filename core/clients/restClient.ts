@@ -6,7 +6,11 @@ export class RestClient {
 
   async get<T>(path: string, status = 200): Promise<T> {
     const r = await this.request.get(`${this.baseUrl}${path}`);
-    await expect(r).toHaveStatus(status);
+    if (status === 200) {
+      await expect(r).toBeOK();
+    } else {
+      await expect(r.status()).toBe(status);
+    }
     return (await r.json()) as T;
   }
 

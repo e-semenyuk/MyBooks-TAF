@@ -14,14 +14,16 @@
     "setup": "node -e \"console.log('No setup yet')\""
   },
   "devDependencies": {
+    "@eslint/js": "^9.37.0",
     "@playwright/test": "^1.48.0",
+    "@types/node": "^20.12.12",
     "ajv": "^8.17.1",
     "dotenv": "^16.4.5",
-    "typescript": "^5.4.5",
-    "eslint": "^9.9.0",
+    "eslint": "^9.37.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.3.3",
-    "@types/node": "^20.12.12"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.46.1",
+    "zod": "^4.1.12"
   }
 }
-

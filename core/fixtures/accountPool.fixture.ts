@@ -6,7 +6,7 @@ type Lease = { email: string; password: string; leaseId: string; expiresAt: numb
 export const test = base.extend<{
   account: Lease;
 }>({
-  account: async ({}, use) => {
+  account: async (_args, use) => {
     const leaseId = randomUUID();
     const acct = await checkoutAccount({ leaseId, ttlSec: 900 });
     try {
@@ -23,7 +23,8 @@ async function checkoutAccount({ leaseId, ttlSec }: { leaseId: string; ttlSec: n
   return { email, password, leaseId, expiresAt: Date.now() + ttlSec * 1000 };
 }
 
-async function releaseAccount(_leaseId: string) {
+async function releaseAccount(leaseId: string) {
+  void leaseId;
   // no-op stub; replace with DB/file-based lease release
 }
 

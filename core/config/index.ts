@@ -15,9 +15,21 @@ const EnvSchema = z.object({
 
 const env = EnvSchema.parse(process.env);
 
-// Per-env code overrides (timeouts, toggles, etc.)
-/* eslint-disable @typescript-eslint/no-var-requires */
-const perEnv = require(`./env/${env.NODE_ENV}.js`)?.default ?? {};
+// Per-env code overrides (timeouts, toggles, etc.) using ESM imports
+import localCfg from './env/local';
+import devCfg from './env/dev';
+import qaCfg from './env/qa';
+import prodCfg from './env/prod';
+
+const perEnvMap: Record<typeof env.NODE_ENV, unknown> = {
+  local: localCfg,
+  dev: devCfg,
+  qa: qaCfg,
+  prod: prodCfg,
+};
+
+type PerEnvCfg = { timeouts?: Record<string, number>; toggles?: Record<string, unknown> };
+const perEnv = (perEnvMap[env.NODE_ENV] as PerEnvCfg) ?? {} as PerEnvCfg;
 
 export const cfg = {
   ...env,
