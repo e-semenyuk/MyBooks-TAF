@@ -1,16 +1,22 @@
 import { test, expect } from '@playwright/test';
+import { HomePage } from '../../../core/pages/HomePage';
+import { ProfilePage } from '../../../core/pages/ProfilePage';
 import { cfg } from '../../../core/config';
 
 test.describe('Users / Profile', () => {
   test('@regression profile page loads', async ({ page }) => {
+    const homePage = new HomePage(page);
+    const profilePage = new ProfilePage(page);
+    
     await page.goto(cfg.BASE_URL);
-    const navProfile = page.getByTestId('nav-profile-button');
-    if (await navProfile.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await navProfile.click();
+    
+    if (await homePage.isProfileButtonVisible()) {
+      await homePage.clickProfileButton();
     } else {
-      await page.goto(cfg.BASE_URL + '/users/123');
+      await profilePage.navigateToProfile('123');
     }
-    await expect(page.getByTestId('profile-header')).toBeVisible();
+    
+    await expect(profilePage.profileHeader).toBeVisible();
   });
 });
 
