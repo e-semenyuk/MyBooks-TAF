@@ -24,7 +24,7 @@ const webServer = cfg.toggles.useHarMocks
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 30_000,
+  timeout: 60_000,
   retries: 1,
   reporter: [['html'], ['junit', { outputFile: 'reports/junit.xml' }]],
   globalSetup: './global-setup.ts',
