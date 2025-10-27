@@ -5,10 +5,13 @@ import { cfg } from './core/config';
 // To use, set WEB_SERVER_CMD (e.g., "npm run start") and ensure cfg.BASE_URL points to it.
 const webServer = cfg.toggles.useHarMocks
   ? {
-      command: 'PORT=3100 node mock-server.mjs',
+      command: process.platform === 'win32' 
+        ? 'node mock-server.mjs' 
+        : 'PORT=3100 node mock-server.mjs',
       url: 'http://localhost:3100',
       reuseExistingServer: true,
       timeout: 10_000,
+      env: process.platform === 'win32' ? { PORT: '3100' } : undefined
     }
   : process.env.WEB_SERVER_CMD
   ? {
@@ -45,4 +48,3 @@ export default defineConfig({
   ],
   grepInvert: cfg.toggles.useHarMocks ? undefined : /@mock/,
 });
-
