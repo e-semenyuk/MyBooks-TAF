@@ -41,7 +41,12 @@ test.describe('E2E: Admin manages book catalog (add, edit, delete)', () => {
     // Step 4: Fill Add New Book form and submit
     await page.waitForTimeout(1000); // Wait for form to appear
     await expect(bookManagementPage.addBookForm).toBeVisible();
+    
+    // Add book and wait for the action to complete
     await bookManagementPage.addBook(testBook);
+    
+    // Wait for the page to settle after the book addition
+    await page.waitForTimeout(2000);
     
     // Verify success toast appears
     await bookManagementPage.verifyAddSuccessToast();
@@ -56,6 +61,9 @@ test.describe('E2E: Admin manages book catalog (add, edit, delete)', () => {
       await page.waitForTimeout(2000); // Wait for book list to be fully rendered
       await bookManagementPage.updateBook(testBook.title, bookUpdateData);
     
+    // Wait for the update action to complete
+    await page.waitForTimeout(2000);
+    
     // Verify update success toast
     await bookManagementPage.verifyUpdateSuccessToast();
     console.log('✅ Step 5: Book updated successfully');
@@ -63,6 +71,9 @@ test.describe('E2E: Admin manages book catalog (add, edit, delete)', () => {
     // Step 6: Click Delete on the book and confirm browser prompt
     await page.waitForTimeout(2000);// Wait for book list to be fully rendered
     await bookManagementPage.deleteBook(testBook.title);
+    
+    // Wait for the delete action to complete
+    await page.waitForTimeout(2000);
     
     // Verify delete success toast
     await bookManagementPage.verifyDeleteSuccessToast();

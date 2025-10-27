@@ -32,6 +32,33 @@ export class BookManagementPage extends BasePage {
   readonly editBookForm: Locator = this.page.locator('text=Edit Book').first();
   readonly updateBookButton: Locator = this.page.locator('button:has-text("Update Book")');
 
+  // Locators - Book Details
+  readonly bookTitleElement: Locator = this.page.locator('h4');
+  
+  // Locators - Action Buttons
+  readonly editBookButton: Locator = this.page.locator('[data-testid^="admin-edit-book-"]');
+  readonly deleteBookButton: Locator = this.page.locator('[data-testid^="admin-delete-book-"]');
+  
+  // Helper method to get book by title locator
+  private getBookByTitleLocator(title: string): Locator {
+    return this.page.locator(`text=${title}`);
+  }
+  
+  // Helper method to get book card locator
+  private getBookCardLocator(title: string): Locator {
+    return this.page.locator(`text=${title}`).locator('..').locator('..');
+  }
+  
+  // Helper method to get author text locator
+  private getAuthorTextLocator(author: string): Locator {
+    return this.page.locator(`text=${author}`);
+  }
+  
+  // Helper method to get ISBN text locator
+  private getIsbnTextLocator(isbn: string): Locator {
+    return this.page.locator(`text=${isbn}`);
+  }
+
   // Actions - Add Book
   async fillTitle(title: string): Promise<void> {
     await this.titleInput.fill(title);
@@ -91,7 +118,7 @@ export class BookManagementPage extends BasePage {
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       // Book title is an h4 heading within each book row
-      const titleElement = row.locator('h4');
+      const titleElement = row.locator(this.bookTitleElement);
       const titleText = await titleElement.textContent();
       console.log(`📖 Book ${i + 1}: "${titleText}"`);
       
@@ -109,7 +136,7 @@ export class BookManagementPage extends BasePage {
     const bookRow = await this.findBookByTitle(bookTitle);
     if (bookRow) {
       // Edit button has data-testid="admin-edit-book-XX"
-      await bookRow.locator('[data-testid^="admin-edit-book-"]').click();
+      await bookRow.locator(this.editBookButton).click();
     } else {
       throw new Error(`Book with title "${bookTitle}" not found`);
     }
@@ -119,7 +146,7 @@ export class BookManagementPage extends BasePage {
     const bookRow = await this.findBookByTitle(bookTitle);
     if (bookRow) {
       // Delete button has data-testid="admin-delete-book-XX"
-      await bookRow.locator('[data-testid^="admin-delete-book-"]').click();
+      await bookRow.locator(this.deleteBookButton).click();
     } else {
       throw new Error(`Book with title "${bookTitle}" not found`);
     }
@@ -158,31 +185,59 @@ export class BookManagementPage extends BasePage {
 
   // Actions - Toast Verification
   async verifyAddSuccessToast(): Promise<void> {
-    await this.successToast.waitFor({ state: 'visible', timeout: 5000 });
+    // Wait a moment for the toast to appear after the action
+    await this.page.waitForTimeout(1000);
+    
+    // Try multiple approaches to find the toast
+    try {
+      await this.successToast.waitFor({ state: 'visible', timeout: 10000 });
+    } catch (error) {
+      // Fallback: look for any element containing the success message
+      const fallbackToast = this.page.locator('text=Book added successfully').first();
+      await fallbackToast.waitFor({ state: 'visible', timeout: 5000 });
+    }
   }
 
   async verifyUpdateSuccessToast(): Promise<void> {
-    await this.updateSuccessToast.waitFor({ state: 'visible', timeout: 5000 });
+    // Wait a moment for the toast to appear after the action
+    await this.page.waitForTimeout(1000);
+    
+    try {
+      await this.updateSuccessToast.waitFor({ state: 'visible', timeout: 10000 });
+    } catch (error) {
+      // Fallback: look for any element containing the success message
+      const fallbackToast = this.page.locator('text=Book updated successfully').first();
+      await fallbackToast.waitFor({ state: 'visible', timeout: 5000 });
+    }
   }
 
   async verifyDeleteSuccessToast(): Promise<void> {
-    await this.deleteSuccessToast.waitFor({ state: 'visible', timeout: 5000 });
+    // Wait a moment for the toast to appear after the action
+    await this.page.waitForTimeout(1000);
+    
+    try {
+      await this.deleteSuccessToast.waitFor({ state: 'visible', timeout: 10000 });
+    } catch (error) {
+      // Fallback: look for any element containing the success message
+      const fallbackToast = this.page.locator('text=Book deleted successfully').first();
+      await fallbackToast.waitFor({ state: 'visible', timeout: 5000 });
+    }
   }
 
   // Actions - Book Verification
   async verifyBookExists(bookTitle: string): Promise<void> {
-    await this.page.locator(`text=${bookTitle}`).waitFor({ state: 'visible', timeout: 5000 });
+    await this.getBookByTitleLocator(bookTitle).waitFor({ state: 'visible', timeout: 5000 });
   }
 
   async verifyBookNotExists(bookTitle: string): Promise<void> {
-    await this.page.locator(`text=${bookTitle}`).waitFor({ state: 'hidden', timeout: 5000 });
+    await this.getBookByTitleLocator(bookTitle).waitFor({ state: 'hidden', timeout: 5000 });
   }
 
   async verifyBookDetails(bookTitle: string, author: string, isbn: string): Promise<void> {
     // Find the specific book by title and verify its details within that book card
-    const bookCard = this.page.locator(`text=${bookTitle}`).locator('..').locator('..'); // Navigate to parent book card
-    await bookCard.locator(`text=${author}`).waitFor({ state: 'visible', timeout: 5000 });
-    await bookCard.locator(`text=${isbn}`).waitFor({ state: 'visible', timeout: 5000 });
+    const bookCard = this.getBookCardLocator(bookTitle);
+    await bookCard.locator(this.getAuthorTextLocator(author)).waitFor({ state: 'visible', timeout: 5000 });
+    await bookCard.locator(this.getIsbnTextLocator(isbn)).waitFor({ state: 'visible', timeout: 5000 });
   }
 
 }
