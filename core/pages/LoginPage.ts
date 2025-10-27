@@ -10,7 +10,8 @@ export class LoginPage extends BasePage {
 
   // Actions
   async clickLoginButton(): Promise<void> {
-    await this.navLoginButton.click();
+    const loginButton = this.page.locator('button:has-text("Login")').first();
+    await loginButton.click();
   }
 
   async fillEmail(email: string): Promise<void> {
@@ -26,10 +27,20 @@ export class LoginPage extends BasePage {
   }
 
   async login(email: string, password: string): Promise<void> {
-    await this.clickLoginButton();
-    await this.fillEmail(email);
-    await this.fillPassword(password);
-    await this.clickSubmitButton();
+    const emailInput = this.page.locator('input[type="email"]').first();
+    const passwordInput = this.page.locator('input[type="password"]').first();
+    const submitButton = this.page.locator('button[type="submit"]').first();
+
+    await emailInput.fill(email);
+    await this.page.waitForTimeout(500);
+    await passwordInput.fill(password);
+    await this.page.waitForTimeout(500);
+    await submitButton.click();
+  }
+
+  async switchToRegister(): Promise<void> {
+    const registerButton = this.page.locator('button:has-text("Register")').first();
+    await registerButton.click();
   }
 }
 
