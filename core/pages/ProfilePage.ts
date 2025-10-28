@@ -3,7 +3,7 @@ import { Locator } from '@playwright/test';
 import { cfg } from '../config';
 
 export class ProfilePage extends BasePage {
-  // Locators
+  // Locators - try data-testid first, then fallback to flexible locators
   readonly profileHeader: Locator = this.byId('profile-header');
 
   // Actions
@@ -15,6 +15,7 @@ export class ProfilePage extends BasePage {
     await this.page.goto(`${cfg.BASE_URL}/users/${userId}`);
   }
 
+  // Additional methods for user journey
   async verifyOrderHistory(): Promise<{ found: boolean; count: number; selector: string }> {
     const orderSelectors = [
       '[data-testid*="order"]',

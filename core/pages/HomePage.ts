@@ -2,7 +2,7 @@ import { BasePage } from './BasePage';
 import { Locator } from '@playwright/test';
 
 export class HomePage extends BasePage {
-  // Locators
+  // Locators - try data-testid first, then fallback to flexible locators
   readonly homePageElement: Locator = this.byId('home-page');
   readonly navProfileButton: Locator = this.byId('nav-profile-button');
   readonly navAdminButton: Locator = this.byId('nav-admin-button');
@@ -15,22 +15,27 @@ export class HomePage extends BasePage {
   }
 
   async clickProfileButton(): Promise<void> {
-    const profileSelectors = [
-      'button:has-text("Profile")',
-      'a:has-text("Profile")',
-      '[data-testid*="profile"]',
-      '.profile',
-      '.user-profile'
-    ];
+    // Try data-testid first, then fallback to flexible locators
+    if (await this.navProfileButton.isVisible()) {
+      await this.navProfileButton.click();
+    } else {
+      const profileSelectors = [
+        'button:has-text("Profile")',
+        'a:has-text("Profile")',
+        '[data-testid*="profile"]',
+        '.profile',
+        '.user-profile'
+      ];
 
-    for (const selector of profileSelectors) {
-      const element = this.page.locator(selector).first();
-      if (await element.isVisible()) {
-        await element.click();
-        return;
+      for (const selector of profileSelectors) {
+        const element = this.page.locator(selector).first();
+        if (await element.isVisible()) {
+          await element.click();
+          return;
+        }
       }
+      throw new Error('Profile button not found');
     }
-    throw new Error('Profile button not found');
   }
 
   async clickAdminButton(): Promise<void> {
@@ -38,8 +43,13 @@ export class HomePage extends BasePage {
   }
 
   async clickLoginButton(): Promise<void> {
-    const loginButton = this.page.locator('button:has-text("Login")').first();
-    await loginButton.click();
+    // Try data-testid first, then fallback to flexible locators
+    if (await this.navLoginButton.isVisible()) {
+      await this.navLoginButton.click();
+    } else {
+      const loginButton = this.page.locator('button:has-text("Login")').first();
+      await loginButton.click();
+    }
   }
 
   async clickLogoutButton(): Promise<void> {
@@ -62,6 +72,7 @@ export class HomePage extends BasePage {
     return await this.navLogoutButton.isVisible({ timeout }).catch(() => false);
   }
 
+  // Additional methods for user journey
   async clickCartButton(): Promise<void> {
     const cartSelectors = [
       'button:has-text("Cart")',
