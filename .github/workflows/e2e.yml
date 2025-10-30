@@ -2,6 +2,15 @@ name: e2e
 on: [push, pull_request]
 jobs:
   test:
+    environment: dev
+    env:
+      NODE_ENV: local
+      BASE_URL: ${{ vars.BASE_URL }}
+      API_URL: ${{ vars.API_URL }}
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      DB_DSN: ${{ secrets.DB_DSN }}
+      ACCOUNT_POOL_TABLE: ${{ vars.ACCOUNT_POOL_TABLE }}
     strategy:
       fail-fast: false
       matrix:
