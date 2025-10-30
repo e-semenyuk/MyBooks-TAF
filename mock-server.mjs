@@ -13,8 +13,8 @@ const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${port}`);
 
   if (url.pathname === '/' && req.method === 'GET') {
-    res.writeHead(200, { 'content-type': 'text/html' });
-    res.end(`<!doctype html><html><body><div>OK</div></body></html>`);
+    res.writeHead(302, { 'Location': '/home' });
+    res.end();
     return;
   }
 

@@ -279,26 +279,7 @@ export class HomePage extends BasePage {
     await this.viewAllBooksButton.waitFor({ state: 'visible', timeout: 5000 });
   }
 
-  async verifyAddToCartToast(): Promise<void> {
-    const toastSelectors = [
-      'text=Book added to cart',
-      'text=Added to cart',
-      'text=Item added',
-      '[data-testid*="toast"]',
-      '.toast',
-      '.notification',
-      '.alert'
-    ];
-
-    for (const selector of toastSelectors) {
-      const element = this.page.locator(selector).first();
-      if (await element.isVisible()) {
-        await element.waitFor({ state: 'visible', timeout: 5000 });
-        return;
-      }
-    }
-    throw new Error('Add to cart toast not found');
-  }
+  async verifySearchInputVisible(): Promise<void> {
     // Try data-testid first, then fallback to flexible locators
     if (await this.searchInput.isVisible()) {
       await this.searchInput.waitFor({ state: 'visible', timeout: 5000 });
@@ -322,6 +303,26 @@ export class HomePage extends BasePage {
       }
       throw new Error('Search input not found');
     }
+  }
+  async verifyAddToCartToast(): Promise<void> {
+    const toastSelectors = [
+      'text=Book added to cart',
+      'text=Added to cart',
+      'text=Item added',
+      '[data-testid*="toast"]',
+      '.toast',
+      '.notification',
+      '.alert'
+    ];
+
+    for (const selector of toastSelectors) {
+      const element = this.page.locator(selector).first();
+      if (await element.isVisible()) {
+        await element.waitFor({ state: 'visible', timeout: 5000 });
+        return;
+      }
+    }
+    throw new Error('Add to cart toast not found');
   }
 
   // Additional methods for user journey with flexible locators
